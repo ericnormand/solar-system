@@ -57,6 +57,11 @@ Planet >> mass: anInteger [
 ]
 
 { #category : #accessing }
+Planet >> name [
+  ^ name
+]
+
+{ #category : #accessing }
 Planet >> name: aString [ 
 name:= aString
 

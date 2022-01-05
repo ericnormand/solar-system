@@ -17,13 +17,13 @@ PlanetDataView class >> newWith: aPlanet [
 		        planet: aPlanet.
 
 	view
-		size: view radius asPoint * 4;
+		layout: BlFrameLayout new;
+		size: view radius asPoint * 2;
 		addChild: view planetView;
 		addChild: view radiusLine;
 		addChild: view radiusText;
+		addChild: view nameText;
 		addChild: view massText.
-
-
 
 	^ view
 ]
@@ -36,6 +36,19 @@ PlanetDataView >> massText [
 		        (planet mass asString , ' earth masses') asRopedText.
 
 	view relocate: self radius - (0 / 2) @ (self radius / 2).
+	^ view
+]
+
+{ #category : #accessing }
+PlanetDataView >> nameText [
+
+	| view |
+	view := BlAttributedTextElement new text:
+		        planet name asString asRopedText.
+	view constraintsDo: [ :c | 
+		c frame horizontal alignCenter.
+		c frame vertical alignBottom ].
+	"view relocate: self radius - (view extent x / 2) @ (self radius * 2 + 10)."
 	^ view
 ]
 
