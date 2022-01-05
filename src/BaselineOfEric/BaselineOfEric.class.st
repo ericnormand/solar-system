@@ -9,5 +9,5 @@ BaselineOfEric >> baseline: spec [
 	<baseline>
 	spec for: #'common' do: [
 		spec 
-			baseline: 'Eric']
+			package: 'Eric']
 ]
