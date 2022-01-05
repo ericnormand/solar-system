@@ -3,7 +3,9 @@ Class {
 	#superclass : #BlElement,
 	#instVars : [
 		'radius',
-		'mass'
+		'mass',
+		'name',
+		'revolvesAround'
 	],
 	#category : #Eric
 }
@@ -55,6 +57,12 @@ Planet >> mass: anInteger [
 ]
 
 { #category : #accessing }
+Planet >> name: aString [ 
+name:= aString
+
+]
+
+{ #category : #accessing }
 Planet >> radius [
 	^ radius
 ]
@@ -66,6 +74,11 @@ Planet >> radius: anInteger [
 
 { #category : #accessing }
 Planet >> radiusLine [
+]
+
+{ #category : #accessing }
+Planet >> revolvesAround: aPlanet [
+revolvesAround := aPlanet
 ]
 
 { #category : #accessing }
