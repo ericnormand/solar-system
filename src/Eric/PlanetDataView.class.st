@@ -11,29 +11,55 @@ Class {
 { #category : #accessing }
 PlanetDataView class >> newWith: aPlanet [
 
-	| view |
+	| view pview rdisplay |
 	view := self new
 		        radius: 200;
 		        planet: aPlanet.
+				            
+	pview := BlElement new
+		         layout: BlFrameLayout new;
+		         size: view radius * 2 asPoint;
+		         constraintsDo: [ :c | 
+			         c frame vertical alignTop.
+			         c frame horizontal alignCenter ];
+		         addChildren: { 
+				         view planetView.
+				         view radiusElement.
+
+				         view massText }.
+
+
 
 	view
 		layout: BlFrameLayout new;
-		size: view radius asPoint * 2;
-		addChild: view planetView;
-		addChild: view radiusLine;
-		addChild: view radiusText;
-		addChild: view nameText;
-		addChild: view massText.
+		size: view radius * 2 @ (view radius * 2 + 20);
+		addChildren: { 
+				pview.
+				view nameText }.
+
 
 	^ view
+]
+
+{ #category : #accessing }
+PlanetDataView >> flowVertical [
+
+	^ BlElement new layout: BlFlowLayout new vertical
+]
+
+{ #category : #accessing }
+PlanetDataView >> frameHorizontal [
+
+	^ BlElement new
+		  layout: BlFrameLayout new;
+		  constraintsDo: [ :c | c horizontal matchParent ]
 ]
 
 { #category : #accessing }
 PlanetDataView >> massText [
 
 	| view |
-	view := BlAttributedTextElement new text:
-		        (planet mass asString , ' earth masses') asRopedText.
+	view := self textElementFor: planet mass asString , ' earth masses'.
 
 	view relocate: self radius - (0 / 2) @ (self radius / 2).
 	^ view
@@ -43,12 +69,10 @@ PlanetDataView >> massText [
 PlanetDataView >> nameText [
 
 	| view |
-	view := BlAttributedTextElement new text:
-		        planet name asString asRopedText.
+	view := self textElementFor: planet name.
 	view constraintsDo: [ :c | 
 		c frame horizontal alignCenter.
 		c frame vertical alignBottom ].
-	"view relocate: self radius - (view extent x / 2) @ (self radius * 2 + 10)."
 	^ view
 ]
 
@@ -86,23 +110,48 @@ PlanetDataView >> radius: anInteger [
 ]
 
 { #category : #accessing }
+PlanetDataView >> radiusElement [
+
+	^ self flowVertical
+		  width: self radius;
+		  constraintsDo: [ :c | 
+			  c frame horizontal alignRight.
+			  c frame vertical alignCenter ];
+		  addChildren: { 
+				  self radiusText.
+				  self radiusLine.
+				  self textElementFor: ' ' }
+]
+
+{ #category : #accessing }
 PlanetDataView >> radiusLine [
 
 	^ BlElement new
+		  constraintsDo: [ :c | c flow float ];
 		  size: self radius @ 4;
-		  background: Color black;
-		  relocate: self radius @ (self radius - 2)
+		  background: Color black
 ]
 
 { #category : #accessing }
 PlanetDataView >> radiusText [
 
 	| rtext |
-	rtext := BlAttributedTextElement new text:
-		         (planet radius asString , ' earth radii') asRopedText.
-	rtext transformDo: [ :aTransform | 
-		aTransform translateBy:
-			self radius + (self radius / 2) - (rtext extent x / 2)
-			@ (self radius - 16) ].
-	^ rtext
+	^ self frameHorizontal
+		  constraintsDo: [ :c | c ];
+		  addChildren: { (self textElement
+				   text: (planet radius asString , ' earth radii') asRopedText;
+				   constraintsDo: [ :c | c frame horizontal alignCenter ]) }
+]
+
+{ #category : #accessing }
+PlanetDataView >> textElement [
+
+	^ BlAttributedTextElement new text:
+		  (planet radius asString , ' earth radii') asRopedText
+]
+
+{ #category : #accessing }
+PlanetDataView >> textElementFor: aString [
+
+	^ BlAttributedTextElement new text: aString asRopedText
 ]
