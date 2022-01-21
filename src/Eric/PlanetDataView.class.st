@@ -15,7 +15,7 @@ PlanetDataView class >> newWith: aPlanet [
 	view := self new
 		        radius: 200;
 		        planet: aPlanet.
-				            
+
 	pview := BlElement new
 		         layout: BlFrameLayout new;
 		         size: view radius * 2 asPoint;
@@ -24,9 +24,11 @@ PlanetDataView class >> newWith: aPlanet [
 			         c frame horizontal alignCenter ];
 		         addChildren: { 
 				         view planetView.
-				         view radiusElement.
+				         (view radiusElement constraintsDo: [:c| c frame horizontal alignRight. c frame vertical alignCenter]).
 
-				         view massText }.
+				         (view massText constraintsDo: [ :c | 
+						          c frame horizontal alignCenter.
+						          c frame vertical alignBottom ]; padding: (BlInsets bottom: 30)) }.
 
 
 
@@ -44,7 +46,7 @@ PlanetDataView class >> newWith: aPlanet [
 { #category : #accessing }
 PlanetDataView >> flowVertical [
 
-	^ BlElement new layout: BlFlowLayout new vertical
+	^ BlElement new layout: BlLinearLayout vertical
 ]
 
 { #category : #accessing }
@@ -61,7 +63,7 @@ PlanetDataView >> massText [
 	| view |
 	view := self textElementFor: planet mass asString , ' earth masses'.
 
-	view relocate: self radius - (0 / 2) @ (self radius / 2).
+
 	^ view
 ]
 
@@ -93,7 +95,7 @@ PlanetDataView >> planetView [
 
 	^ BlElement new
 		  geometry: BlEllipseGeometry new;
-		  background: planet background clone;
+		  background: planet color clone;
 		  size: self radius * 2 @ (self radius * 2);
 		  yourself
 ]
@@ -112,22 +114,26 @@ PlanetDataView >> radius: anInteger [
 { #category : #accessing }
 PlanetDataView >> radiusElement [
 
-	^ self flowVertical
-		  width: self radius;
-		  constraintsDo: [ :c | 
-			  c frame horizontal alignRight.
-			  c frame vertical alignCenter ];
-		  addChildren: { 
-				  self radiusText.
-				  self radiusLine.
-				  self textElementFor: ' ' }
+	^ BlElement new
+	size: self radius @ self radius;
+	layout: BlFrameLayout new;
+	addChildren: { 
+			(BlAttributedTextElement new
+				 text: (self planet radius asString , ' earth radii') asRopedText;
+				 constraintsDo: [ :c | c frame horizontal alignCenter. c frame vertical alignCenter ];
+				 padding: (BlInsets bottom: 30)).
+			(BlElement new
+				 background: Color black;
+				 height: 2;
+				 constraintsDo: [ :c | 
+					 c horizontal matchParent.
+					 c frame vertical alignCenter ]) }
 ]
 
 { #category : #accessing }
 PlanetDataView >> radiusLine [
 
 	^ BlElement new
-		  constraintsDo: [ :c | c flow float ];
 		  size: self radius @ 4;
 		  background: Color black
 ]

@@ -1,14 +1,25 @@
 Class {
 	#name : #Planet,
-	#superclass : #BlElement,
+	#superclass : #Object,
 	#instVars : [
 		'radius',
 		'mass',
 		'name',
-		'revolvesAround'
+		'revolvesAround',
+		'color'
 	],
 	#category : #Eric
 }
+
+{ #category : #accessing }
+Planet >> color [
+  ^color
+]
+
+{ #category : #accessing }
+Planet >> color: aColor [
+	color := aColor
+]
 
 { #category : #accessing }
 Planet >> gtPlanetDataFor: aView [
@@ -39,11 +50,9 @@ Planet >> initialize [
 
 	super initialize.
 	self
-		geometry: BlEllipseGeometry new;
-		size: 20 @ 20;
+	
 		mass: 1;
-		radius: 1;
-		background: Color black.
+		radius: 1
 ]
 
 { #category : #accessing }
